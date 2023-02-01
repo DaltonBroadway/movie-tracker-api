@@ -131,6 +131,124 @@ async def test_get_by_title(movies_seed, movie_title, expected_result):
     assert result == expected_result
 
 
+@pytest.mark.parametrize(
+    "movie_title,skip,limit,expected_result",
+    [
+        pytest.param(
+            "My Movie",
+            2,
+            1000,
+            [
+                Movie(
+                    movie_id="my-id-3",
+                    title="My Movie",
+                    description="My Description",
+                    release_year=1990,
+                ),
+                Movie(
+                    movie_id="my-id-4",
+                    title="My Movie",
+                    description="My Description",
+                    release_year=1990,
+                ),
+                Movie(
+                    movie_id="my-id-5",
+                    title="My Movie",
+                    description="My Description",
+                    release_year=1990,
+                ),
+            ],
+            id="skip",
+        ),
+        pytest.param(
+            "My Movie",
+            0,
+            3,
+            [
+                Movie(
+                    movie_id="my-id-1",
+                    title="My Movie",
+                    description="My Description",
+                    release_year=1990,
+                ),
+                Movie(
+                    movie_id="my-id-2",
+                    title="My Movie",
+                    description="My Description",
+                    release_year=1990,
+                ),
+                Movie(
+                    movie_id="my-id-3",
+                    title="My Movie",
+                    description="My Description",
+                    release_year=1990,
+                ),
+            ],
+            id="limit",
+        ),
+        pytest.param(
+            "My Movie",
+            2,
+            2,
+            [
+                Movie(
+                    movie_id="my-id-3",
+                    title="My Movie",
+                    description="My Description",
+                    release_year=1990,
+                ),
+                Movie(
+                    movie_id="my-id-4",
+                    title="My Movie",
+                    description="My Description",
+                    release_year=1990,
+                ),
+            ],
+            id="skip-and-limit",
+        ),
+    ],
+)
+@pytest.mark.asyncio
+async def test_get_by_title_pagination(movie_title, skip, limit, expected_result):
+    movies_seed = [
+        Movie(
+            movie_id="my-id-1",
+            title="My Movie",
+            description="My Description",
+            release_year=1990,
+        ),
+        Movie(
+            movie_id="my-id-2",
+            title="My Movie",
+            description="My Description",
+            release_year=1990,
+        ),
+        Movie(
+            movie_id="my-id-3",
+            title="My Movie",
+            description="My Description",
+            release_year=1990,
+        ),
+        Movie(
+            movie_id="my-id-4",
+            title="My Movie",
+            description="My Description",
+            release_year=1990,
+        ),
+        Movie(
+            movie_id="my-id-5",
+            title="My Movie",
+            description="My Description",
+            release_year=1990,
+        ),
+    ]
+    repo = MemoryMovieRepository()
+    for movie in movies_seed:
+        await repo.create(movie)
+    result = await repo.get_by_title(title=movie_title, skip=skip, limit=limit)
+    assert result == expected_result
+
+
 @pytest.mark.asyncio
 async def test_delete():
     repo = MemoryMovieRepository()
