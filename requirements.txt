@@ -1,0 +1,7 @@
+fastapi==0.89.1
+uvicorn==0.20.0
+pydantic==1.10.4
+motor==3.1.1
+prometheus-client==0.16.0
+prometheus-fastapi-instrumentator==5.9.1
+python-jose==3.3.0
